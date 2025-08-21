@@ -10,14 +10,20 @@ interface ExcalidrawCanvasProps {
 export const ExcalidrawCanvas: React.FC<ExcalidrawCanvasProps> = ({ file, onSave }) => {
   const handleChange = useCallback((elements: any, appState: any) => {
     if (file) {
+      // Constrain zoom to prevent canvas size errors
+      const constrainedAppState = {
+        ...appState,
+        zoom: {
+          value: Math.max(0.1, Math.min(30, appState?.zoom?.value || 1))
+        },
+        // Remove properties that shouldn't be saved
+        isLoading: false,
+        errorMessage: null,
+      };
+
       const data = {
         elements,
-        appState: {
-          ...appState,
-          // Remove properties that shouldn't be saved
-          isLoading: false,
-          errorMessage: null,
-        },
+        appState: constrainedAppState,
       };
       
       // Debounce save to avoid excessive updates
@@ -28,6 +34,21 @@ export const ExcalidrawCanvas: React.FC<ExcalidrawCanvasProps> = ({ file, onSave
       return () => clearTimeout(timeoutId);
     }
   }, [file, onSave]);
+
+  // Prepare initial data with zoom constraints
+  const getInitialData = () => {
+    if (!file?.data) return undefined;
+    
+    return {
+      ...file.data,
+      appState: {
+        ...file.data.appState,
+        zoom: {
+          value: Math.max(0.1, Math.min(30, file.data.appState?.zoom?.value || 1))
+        }
+      }
+    };
+  };
 
   if (!file) {
     return (
@@ -63,7 +84,7 @@ export const ExcalidrawCanvas: React.FC<ExcalidrawCanvasProps> = ({ file, onSave
     <div className="flex-1 bg-background">
       <div className="h-full w-full">
         <Excalidraw
-          initialData={file.data}
+          initialData={getInitialData()}
           onChange={handleChange}
           theme="dark"
           UIOptions={{
