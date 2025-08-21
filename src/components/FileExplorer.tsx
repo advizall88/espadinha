@@ -139,19 +139,23 @@ const FileItem: React.FC<FileItemProps> = ({
         </DropdownMenu>
       </div>
 
-      {isFolder && (item as FileFolder).isExpanded && (item as FileFolder).children.map((child) => (
-        <FileItem
-          key={child.id}
-          item={child}
-          level={level + 1}
-          isActive={child.id === activeFileId}
-          activeFileId={activeFileId}
-          onSelect={onSelect}
-          onRename={onRename}
-          onDelete={onDelete}
-          onToggleFolder={onToggleFolder}
-        />
-      ))}
+      {isFolder && (item as FileFolder).isExpanded && (
+        <div className="animate-fade-in">
+          {(item as FileFolder).children.map((child) => (
+            <FileItem
+              key={child.id}
+              item={child}
+              level={level + 1}
+              isActive={child.id === activeFileId}
+              activeFileId={activeFileId}
+              onSelect={onSelect}
+              onRename={onRename}
+              onDelete={onDelete}
+              onToggleFolder={onToggleFolder}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -169,6 +173,22 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newItemName, setNewItemName] = useState('');
+
+  const renderFileTree = (items: FileSystemItem[], level: number = 0): React.ReactNode => {
+    return items.map((item) => (
+      <FileItem
+        key={item.id}
+        item={item}
+        level={level}
+        isActive={item.id === activeFileId}
+        activeFileId={activeFileId}
+        onSelect={onFileSelect}
+        onRename={onRename}
+        onDelete={onDelete}
+        onToggleFolder={onToggleFolder}
+      />
+    ));
+  };
 
   const handleCreateFile = () => {
     if (newItemName.trim()) {
@@ -243,19 +263,16 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       </div>
 
       <div className="flex-1 overflow-auto">
-        {files.map((item) => (
-          <FileItem
-            key={item.id}
-            item={item}
-            level={0}
-            isActive={item.id === activeFileId}
-            activeFileId={activeFileId}
-            onSelect={onFileSelect}
-            onRename={onRename}
-            onDelete={onDelete}
-            onToggleFolder={onToggleFolder}
-          />
-        ))}
+        <div className="animate-fade-in">
+          {renderFileTree(files)}
+        </div>
+        
+        {files.length === 0 && (
+          <div className="p-4 text-center text-muted-foreground text-sm">
+            <p>Nenhum arquivo ainda.</p>
+            <p>Clique nos ícones acima para criar.</p>
+          </div>
+        )}
       </div>
     </div>
   );

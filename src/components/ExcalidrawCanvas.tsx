@@ -31,10 +31,29 @@ export const ExcalidrawCanvas: React.FC<ExcalidrawCanvasProps> = ({ file, onSave
 
   if (!file) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-background text-muted-foreground">
-        <div className="text-center">
-          <h3 className="text-lg font-medium mb-2">Nenhum arquivo selecionado</h3>
-          <p className="text-sm">Selecione um arquivo na barra lateral ou crie um novo</p>
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="w-20 h-20 mx-auto mb-6 bg-primary/20 rounded-full flex items-center justify-center">
+            <svg 
+              className="w-10 h-10 text-primary"
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" 
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-foreground mb-3">
+            Bem-vindo ao React Excalidraw Editor
+          </h3>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Selecione um arquivo no explorador lateral para começar a desenhar ou crie um novo arquivo para começar
+          </p>
         </div>
       </div>
     );
